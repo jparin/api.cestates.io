@@ -33,17 +33,30 @@ require APPPATH.'/modules/v1/libraries/REST_Controller.php';
             }else{
                 // FETCH SPECIFIC
 
+
             }
-            
         }
 
         public function index_post()
         {
             // CREATE USERS
+            
+
+
+
+
+
+
+
+
         }
 
         public function index_put()
         {
             // UPDATE USERS
+        }
+
+        public function login_post(){
+            
         }
     }
