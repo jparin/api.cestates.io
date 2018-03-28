@@ -35,10 +35,12 @@ class JWT
 		if (count($tks) != 3) {
 			throw new UnexpectedValueException('Wrong number of segments');
 		}
+		
 		list($headb64, $bodyb64, $cryptob64) = $tks;
 		if (null === ($header = JWT::jsonDecode(JWT::urlsafeB64Decode($headb64)))) {
 			throw new UnexpectedValueException('Invalid segment encoding');
 		}
+	
 		if (null === $payload = JWT::jsonDecode(JWT::urlsafeB64Decode($bodyb64))) {
 			throw new UnexpectedValueException('Invalid segment encoding');
 		}
@@ -117,6 +119,7 @@ class JWT
 	{
 		$obj = json_decode($input);
 		if (function_exists('json_last_error') && $errno = json_last_error()) {
+			var_dump($errno);
 			JWT::_handleJsonError($errno);
 		} else if ($obj === null && $input !== 'null') {
 			throw new DomainException('Null result with non-null input');
@@ -134,7 +137,7 @@ class JWT
 	 */
 	public static function jsonEncode($input)
 	{
-		$json = json_encode($input);
+		$json = JWT::safe_json_encode($input);
 		if (function_exists('json_last_error') && $errno = json_last_error()) {
 			JWT::_handleJsonError($errno);
 		} else if ($json === 'null' && $input !== null) {
@@ -158,6 +161,28 @@ class JWT
 			$input .= str_repeat('=', $padlen);
 		}
 		return base64_decode(strtr($input, '-_', '+/'));
+	}
+
+	public static function safe_json_encode($value, $options = 0, $depth = 512){
+		$encoded = json_encode($value, $options, $depth);
+		switch (json_last_error()) {
+			case JSON_ERROR_NONE:
+				return $encoded;
+			case JSON_ERROR_DEPTH:
+				return 'Maximum stack depth exceeded'; // or trigger_error() or throw new Exception()
+			case JSON_ERROR_STATE_MISMATCH:
+				return 'Underflow or the modes mismatch'; // or trigger_error() or throw new Exception()
+			case JSON_ERROR_CTRL_CHAR:
+				return 'Unexpected control character found';
+			case JSON_ERROR_SYNTAX:
+				return 'Syntax error, malformed JSON'; // or trigger_error() or throw new Exception()
+			case JSON_ERROR_UTF8:
+				$clean = utf8ize($value);
+				return safe_json_encode($clean, $options, $depth);
+			default:
+				return 'Unknown error'; // or trigger_error() or throw new Exception()
+	
+		}
 	}
 
 	/**

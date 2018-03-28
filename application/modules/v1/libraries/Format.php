@@ -1,4 +1,6 @@
 <?php
+// Note, this cannot be namespaced for the time being due to how CI works
+//namespace Restserver\Libraries;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -379,9 +381,6 @@ class Format {
         // Close the handle
         fclose($handle);
 
-        // Convert UTF-8 encoding to UTF-16LE which is supported by MS Excel
-        $csv = mb_convert_encoding($csv, 'UTF-16LE', 'UTF-8');
-
         return $csv;
     }
 
@@ -406,21 +405,21 @@ class Format {
 
         if (empty($callback) === TRUE)
         {
-            return json_encode($data, JSON_UNESCAPED_UNICODE);
+            return json_encode($data);
         }
 
         // We only honour a jsonp callback which are valid javascript identifiers
         elseif (preg_match('/^[a-z_\$][a-z0-9\$_]*(\.[a-z_\$][a-z0-9\$_]*)*$/i', $callback))
         {
             // Return the data as encoded json with a callback
-            return $callback.'('.json_encode($data, JSON_UNESCAPED_UNICODE).');';
+            return $callback.'('.json_encode($data).');';
         }
 
         // An invalid jsonp callback function provided.
         // Though I don't believe this should be hardcoded here
         $data['warning'] = 'INVALID JSONP CALLBACK: '.$callback;
 
-        return json_encode($data, JSON_UNESCAPED_UNICODE);
+        return json_encode($data);
     }
 
     /**
