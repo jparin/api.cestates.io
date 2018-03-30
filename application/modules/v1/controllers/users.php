@@ -14,12 +14,14 @@ class Users extends REST_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->load->model("v1/Api_model");
+        $this->load->model("v1/Api_model"); 
+        $this->load->model("v1/User_model"); 
 
         
         $api_key = $this->post('api_key');
         $this->api_check = $this->Api_model->checkApiKey($api_key);
-    
+        $this->load->library('form_validation');
+        $this->form_validation->CI =& $this;
     }
 
     public function index_get($user_id = null)
@@ -61,10 +63,35 @@ class Users extends REST_Controller {
 
     public function signup_post(){
         if ($this->api_check != FALSE ){
-            echo "AUTHORIZED";
+
+            // // check password validation
+           
+
+
+            $validation = $this->User_model->signup_form_validation;
+            $this->form_validation->set_rules($validation);
+            // $this->form_validation->set_data($_POST);
+            if($this->form_validation->run() == TRUE){
+                echo 'valid';
+            }else {
+                $errors = $this->form_validation->error_array();
+                $response = [
+                    'status' => REST_Controller::HTTP_UNAUTHORIZED,
+                    'message' => 'Form validation failed',
+                ];
+            }
         }else {
-            echo "NOT AUTHORIZED";
+            $response = [
+                'status' => REST_Controller::HTTP_UNAUTHORIZED,
+                'message' => 'Unauthorized',
+            ];
+            $this->set_response($response, REST_Controller::HTTP_UNAUTHORIZED);
         }
     
+    }
+
+    public function _password_allowed($password){
+        $pattern = '((?=.*[A-Z])(?=.*[a-z])(?=.*\d).{7,21})';
+        return preg_match($pattern, $password);
     }
 }

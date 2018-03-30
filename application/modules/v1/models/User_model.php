@@ -2,6 +2,16 @@
 
 class User_Model extends CI_Model
 {
+
+	public $signup_form_validation = array(
+		'firstname' => array('field' => 'firstname', 'label' => 'First Name', 'rules' => 'required'),
+		'lastname' => array('field' => 'lastname', 'label' => 'Last Name', 'rules' => 'required'),
+		'email' => array('field' => 'email', 'label' => 'Email Address', 'rules' => 'required|valid_email'),
+		'password' => array('field' => 'password', 'label' => 'Password', 'rules' => 'required|min_length[6]|callback__password_allowed'),
+		'confirmed_password' => array('field' => 'confirmed_password', 'label' => 'Confirmed Password', 'rules' => 'matches[password]')
+	);
+
+
    public function __construct()
    {
       parent::__construct();
