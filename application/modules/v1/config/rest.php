@@ -266,6 +266,5 @@ $config['rest_ajax_only'] = FALSE;
 $config['rest_server']	= 'api.cestates.io/';
 //$config['rest_server']	= site_url('api').'/';   //don't forget the trailing slash
 
-
 /* End of file config.php */
 /* Location: ./system/application/config/rest.php */

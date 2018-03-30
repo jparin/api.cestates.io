@@ -73,19 +73,19 @@ class Users extends REST_Controller {
             if($this->form_validation->run() == TRUE){
                 
                 // CAPTCHA
-                // $client     = new GuzzleHttp\Client();
-                // $response = $client->request('POST','https://www.google.com/recaptcha/api/siteverify',[
-                //     'form_params' => ['secret'=>'6Ldy508UAAAAABpFbTRIIegvLQ-Rdr-4hvF7w_Gb','response' => 'test']
-                // ]);
+                $client     = new GuzzleHttp\Client();
+                $response = $client->request('POST','https://www.google.com/recaptcha/api/siteverify',[
+                    'form_params' => ['secret'=>'6Ldy508UAAAAABpFbTRIIegvLQ-Rdr-4hvF7w_Gb','response' => 'test']
+                ]);
                
-                // $result = json_decode($response->getBody()->getContents());
-                // if($result->success){
-                //     // send email verification
+                $result = json_decode($response->getBody()->getContents());
+                if($result->success){
+                    // send email verification
 
 
-                // }else{
+                }else{
 
-                // }
+                }
                 $data = array(
                     'cet_user_fname' => strtolower($this->input->post('firstname')),
                     'cet_user_lname' =>strtolower($this->input->post('lastname')),
