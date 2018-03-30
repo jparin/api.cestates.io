@@ -5,8 +5,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 require APPPATH.'/modules/v1/libraries/REST_Controller.php';
 require APPPATH.'/modules/v1/libraries/Format.php';
 
- 
-
 class Users extends REST_Controller {
 
     private $api_check;
@@ -70,15 +68,30 @@ class Users extends REST_Controller {
 
             $validation = $this->User_model->signup_form_validation;
             $this->form_validation->set_rules($validation);
-            // $this->form_validation->set_data($_POST);
+            $this->form_validation->set_message('_password_allowed', "Password must contain atleast one Uppercase letter, one symbol and one number!.");
             if($this->form_validation->run() == TRUE){
-                echo 'valid';
+                
+                // CAPTCHA
+                $client     = new GuzzleHttp\Client();
+                $response = $client->request('POST','https://www.google.com/recaptcha/api/siteverify',[
+                    'form_params' => ['secret'=>'6Ldy508UAAAAABpFbTRIIegvLQ-Rdr-4hvF7w_Gb','response' => 'test']
+                ]);
+               
+                $result = json_decode($response->getBody()->getContents());
+                if($result->success){
+
+                }else{
+                    
+                }
+              
             }else {
                 $errors = $this->form_validation->error_array();
                 $response = [
-                    'status' => REST_Controller::HTTP_UNAUTHORIZED,
+                    'status' => 'error',
                     'message' => 'Form validation failed',
+                    'errors' => $errors
                 ];
+                $this->set_response($response, 'error');
             }
         }else {
             $response = [
@@ -91,7 +104,19 @@ class Users extends REST_Controller {
     }
 
     public function _password_allowed($password){
-        $pattern = '((?=.*[A-Z])(?=.*[a-z])(?=.*\d).{7,21})';
-        return preg_match($pattern, $password);
+        $returnVal = true;
+        if ( !preg_match("#[0-9]+#", $password) ) {
+            $returnVal = False;
+        }
+        if ( !preg_match("#[a-z]+#", $password) ) {
+            $returnVal = False;
+        }
+        if ( !preg_match("#[A-Z]+#", $password) ) {
+            $returnVal = False;
+        }
+        if ( !preg_match("/[\'^£$%&*()}{@#~?><>,|=_+!-]/", $password) ) {
+            $returnVal = False;
+        }
+        return $returnVal;
     }
 }
