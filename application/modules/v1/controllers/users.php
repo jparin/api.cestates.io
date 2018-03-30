@@ -69,21 +69,44 @@ class Users extends REST_Controller {
             $validation = $this->User_model->signup_form_validation;
             $this->form_validation->set_rules($validation);
             $this->form_validation->set_message('_password_allowed', "Password must contain atleast one Uppercase letter, one symbol and one number!.");
+            $this->form_validation->set_message('_email_is_unique', "Email is already been used!.");
             if($this->form_validation->run() == TRUE){
                 
                 // CAPTCHA
-                $client     = new GuzzleHttp\Client();
-                $response = $client->request('POST','https://www.google.com/recaptcha/api/siteverify',[
-                    'form_params' => ['secret'=>'6Ldy508UAAAAABpFbTRIIegvLQ-Rdr-4hvF7w_Gb','response' => 'test']
-                ]);
+                // $client     = new GuzzleHttp\Client();
+                // $response = $client->request('POST','https://www.google.com/recaptcha/api/siteverify',[
+                //     'form_params' => ['secret'=>'6Ldy508UAAAAABpFbTRIIegvLQ-Rdr-4hvF7w_Gb','response' => 'test']
+                // ]);
                
-                $result = json_decode($response->getBody()->getContents());
-                if($result->success){
+                // $result = json_decode($response->getBody()->getContents());
+                // if($result->success){
+                //     // send email verification
 
+
+                // }else{
+
+                // }
+                $data = array(
+                    'cet_user_fname' => strtolower($this->input->post('firstname')),
+                    'cet_user_lname' =>strtolower($this->input->post('lastname')),
+                    'cet_user_email' => strtolower($this->input->post('email')),
+                    'cet_user_password' => hash('sha512', $this->input->post('password') . $this->config->item('encryption_key'))
+                );
+                $result = array();
+                if($this->User_model->save($data)){
+                    $response = [
+                        'status' => 'success',
+                        'message' => 'Successfully Save Users',
+                    ];
                 }else{
-                    
+                    $response = [
+                        'status' => 'error',
+                        'message' => 'Not saved users',
+                    ];
                 }
-              
+
+                
+                $this->set_response($response, 'success');
             }else {
                 $errors = $this->form_validation->error_array();
                 $response = [
@@ -118,5 +141,10 @@ class Users extends REST_Controller {
             $returnVal = False;
         }
         return $returnVal;
+    }
+
+    public function _email_is_unique($email){
+        $user = $this->User_model->get_by(array('cet_user_email' => trim($email)));
+        return count($user)?false:true;
     }
 }
