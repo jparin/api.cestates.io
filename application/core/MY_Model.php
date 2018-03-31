@@ -78,7 +78,7 @@ class MY_Model extends CI_Model
 
     function insert_on_duplicate_update_batch($table, $col_index ,$where_fields, $update_fields,$data)
     {
-   
+
         $this->db->select('*');
         $rows = $this->db->get($table)->result_array();
         $rows2 = $rows;
@@ -86,7 +86,7 @@ class MY_Model extends CI_Model
         $to_update_data = array();
         /*
         foreach($data as $d){
-          
+
             if(count($rows)){
                 foreach($rows as $index => &$row){
                     $row_temp = array();
@@ -95,13 +95,13 @@ class MY_Model extends CI_Model
                         $row_temp[$field] = $row[$field];
                         $d_temp[$field] = $d[$field];
                     }
-                    
+
 
                     if($d_temp == $row_temp){
                         foreach($update_fields as $uf){
                              $row[$uf] = $d[$uf];
-                        } 
-                       
+                        }
+
                         $to_update_data[] = $row;
                         unset($rows[$index]);
                         break;
@@ -113,10 +113,10 @@ class MY_Model extends CI_Model
             }else{
                  $to_insert_data[] = $d;
             }
-        } // END LOOP 
+        } // END LOOP
         */
 
-        
+
 
         foreach($data as $d){
             if(count($rows)){
@@ -128,11 +128,11 @@ class MY_Model extends CI_Model
                         $row_temp[$field] = $row[$field];
                         $d_temp[$field] = $d[$field];
                     }
-                    
+
                     if($d_temp == $row_temp){
                         foreach($update_fields as $uf){
                              $row[$uf] = $d[$uf];
-                        } 
+                        }
                         $to_update_data[] = $row;
                         unset($rows[$index]);
                         break;
@@ -155,15 +155,15 @@ class MY_Model extends CI_Model
                  if($d_temp == $row_temp){
                      $not_found = false;
                      break;
-                 } 
-             
+                 }
+
             }
-            
+
             if($not_found){
                $to_insert_data[] =  $d;
             }
 
-        } // END LOOP 
+        } // END LOOP
 
 
         if(count($to_insert_data)){
