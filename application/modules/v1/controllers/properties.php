@@ -63,6 +63,7 @@ class Properties extends REST_Controller {
 		];
 		$this->set_response($response, 'success');
 	}
+
 	public function save_property_post(){
 		$validation = $this->Properties_model->properties_form_validation;
 		$this->form_validation->set_rules($validation);
@@ -176,7 +177,7 @@ class Properties extends REST_Controller {
 					}
 					$response = [
 						'status' => 'success',
-						'message' => 'Successfully Save Property',
+						'message' => 'Property updated',
 					];
 					$this->set_response($response, 'success');
 				}
