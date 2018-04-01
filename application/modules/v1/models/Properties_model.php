@@ -7,11 +7,12 @@ class Properties_model extends MY_Model{
 	protected $_timestamps = false;
 
 	public $properties_form_validation = array(
-		'name' => array('field' => 'name', 'label' => 'Property Name', 'rules' => 'required'),
+		'name' => array('field' => 'name', 'label' => 'Property Name', 'rules' => 'required|callback__name_is_unique'),
 		'description' => array('field' => 'description', 'label' => 'Property Description', 'rules' => 'required'),
-		'price' => array('field' => 'email', 'label' => 'Property Price', 'rules' => 'required|numeric'),
+		'price' => array('field' => 'price', 'label' => 'Property Price', 'rules' => 'required|numeric'),
 		'map' => array('field' => 'map', 'label' => 'Map', 'rules' => 'required'),
-		'address' => array('field' => 'address', 'label' => 'address', 'rules' => 'required')
+		'address' => array('field' => 'address', 'label' => 'Property Address', 'rules' => 'required'),
+		'images' => array('field' => 'images', 'label' => 'Property Image', 'rules' => ''),
 	);
 
 	public function __construct()
