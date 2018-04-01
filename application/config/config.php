@@ -533,3 +533,6 @@ $config['proxy_ips'] = '';
 $config['modules_locations'] = array(
     APPPATH . 'modules/' => '../modules/',
 );
+
+// NEM NIS IP
+$config['nis']	= 'http://127.0.0.1:7890/';

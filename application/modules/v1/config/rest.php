@@ -24,6 +24,7 @@ $config['rest_default_format'] = 'json';
  */
 $config['enable_emulate_request'] = TRUE;
 
+$config['allow_any_cors_domain'] = TRUE;
 
 /*
  |--------------------------------------------------------------------------
