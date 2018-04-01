@@ -28,11 +28,8 @@ class Properties_model extends MY_Model{
 							cp.cet_property_map as map,
 							cp.cet_property_price as price,
 							cp.cet_property_address as address,
-							cp.cet_property_type as type,
-							cpi.cet_pimages_link as image');
-
+							cp.cet_property_type as type,');
 		$this->db->from('cet_properties as cp');
-		$this->db->join('cet_properties_images as cpi', 'cp.cet_property_id = cpi.cet_pimages_id');
 		$this->db->where($property_id);
 		$query = $this->db->get();
 		$results = $query->result_array();
@@ -46,11 +43,8 @@ class Properties_model extends MY_Model{
 							cp.cet_property_map as map,
 							cp.cet_property_price as price,
 							cp.cet_property_address as address,
-							cp.cet_property_type as type,
-							cpi.cet_pimages_link as image');
-
+							cp.cet_property_type as type,');
 		$this->db->from('cet_properties as cp');
-		$this->db->join('cet_properties_images as cpi', 'cp.cet_property_id = cpi.cet_pimages_property_id');
 		$query = $this->db->get();
 		$results = $query->result_array();
 		return $results;

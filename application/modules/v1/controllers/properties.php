@@ -24,21 +24,44 @@ class Properties extends REST_Controller {
 		$this->form_validation->CI =& $this;
 	}
 
-	public function index_get()
+	public function index_get($id = null)
 	{
-		$id = $this->input->get('id');
+
 		if($id == null){
 			$property = $this->Properties_model->getProperties();
+			foreach ($property as $key => $value) {
+				$images = array('images' => $this->Properties_images_model->get_by(array('cet_pimages_property_id' => $property[$key]['id'])));
+				$property[$key] = array_merge($property[$key], $images);
+			}
 			echo json_encode($property);
 
 		}else{
 			$property = $this->Properties_model->getProperty(array('cet_property_id' => $id));
+			foreach ($property as $key => $value) {
+				$images = array('images' => $this->Properties_images_model->get_by(array('cet_pimages_property_id' => $property[$key]['id'])));
+				$property[$key] = array_merge($property[$key], $images);
+			}
 			echo json_encode($property);
 		}
 	}
 
 	public function index_post(){
+	}
 
+	public function index_delete($property_id){
+		$property_images = $this->Properties_images_model->get_by(array('cet_pimages_property_id' => $property_id));
+		foreach ($property_images as $key => $value) {
+			$exploded = explode('/', $property_images[$key]['cet_pimages_link']);
+			$image_name = $exploded[2];
+			unlink("images/properties/".$image_name);
+		}
+		$this->Properties_images_model->delete_images($property_id);
+		$this->Properties_model->delete($property_id);
+		$response = [
+			'status' => 'success',
+			'message' => 'Property Deleted',
+		];
+		$this->set_response($response, 'success');
 	}
 	public function save_property_post(){
 		$validation = $this->Properties_model->properties_form_validation;
