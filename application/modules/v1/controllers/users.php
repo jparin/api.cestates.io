@@ -62,10 +62,12 @@ class Users extends REST_Controller {
    
  public function signup_post(){
         if ($this->api_check != FALSE ){
-
+            $input = file_get_contents('php://input');
+            $post = (Array)json_decode($input);
             // // check password validation
             $validation = $this->User_model->signup_form_validation;
             $this->form_validation->set_rules($validation);
+            $this->form_validation->set_data($post);
             $this->form_validation->set_message('_password_allowed', "Password must contain atleast one Uppercase letter, one symbol and one number!.");
             $this->form_validation->set_message('_email_is_unique', "Email is already been used!.");
             if($this->form_validation->run() == TRUE){
@@ -85,10 +87,10 @@ class Users extends REST_Controller {
 
                 }
                 $data = array(
-                    'cet_user_fname' => strtolower($this->input->post('firstname')),
-                    'cet_user_lname' =>strtolower($this->input->post('lastname')),
-                    'cet_user_email' => strtolower($this->input->post('email')),
-                    'cet_user_password' => hash('sha512', $this->input->post('password') . $this->config->item('encryption_key'))
+                    'cet_user_fname' => strtolower($post['firstname']),
+                    'cet_user_lname' =>strtolower($post['lastname']),
+                    'cet_user_email' => strtolower($post['email']),
+                    'cet_user_password' => hash('sha512', $post['password'] . $this->config->item('encryption_key'))
                 );
                 $result = array();
                 if($this->User_model->save($data)){
@@ -126,21 +128,26 @@ class Users extends REST_Controller {
     
 
     public function signup_mobile_post(){
+
+        $input = file_get_contents('php://input');
+        $post = (Array)json_decode($input);
         if ($this->api_check != FALSE ){
             $this->load->library('email');
             // // check password validation
             $validation = $this->User_model->signup_form_validation;
             $this->form_validation->set_rules($validation);
+            $this->form_validation->set_data($post);
+
             $this->form_validation->set_message('_password_allowed', "Password must contain atleast one Uppercase letter, one symbol and one number!.");
             $this->form_validation->set_message('_email_is_unique', "Email is already been used!.");
             if($this->form_validation->run() == TRUE){
                 $error = false;
                 $hash = md5( rand(0,1000) ) * time();
                 $data = array(
-                    'cet_user_fname' => strtolower(trim($this->input->post('firstname'))),
-                    'cet_user_lname' =>strtolower(trim($this->input->post('lastname'))),
-                    'cet_user_email' => strtolower(trim($this->input->post('email'))),
-                    'cet_user_password' => hash('sha512', $this->input->post('password') . $this->config->item('encryption_key')),
+                    'cet_user_fname' => strtolower(trim($post['firstname'])),
+                    'cet_user_lname' =>strtolower(trim($post['lastname'])),
+                    'cet_user_email' => strtolower(trim($post['email'])),
+                    'cet_user_password' => hash('sha512', $post['password'] . $this->config->item('encryption_key')),
                     'cet_user_hash' => $hash
                 );
                 
@@ -162,7 +169,7 @@ class Users extends REST_Controller {
                     $data = array();
                     $data['validation_link'] = site_url('v1/users/'.$user_id.'/'.$hash);
                     $this->email->from('joed@cestates.io', 'Joed Parin');
-                    $this->email->to($this->input->post('email'));
+                    $this->email->to($post['email']);
                     $this->email->subject('Email Verification | CEstates');
                     $this->email->message($this->load->view('v1/activate', $data, true));
                     $result = $this->email->send();
