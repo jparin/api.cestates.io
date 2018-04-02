@@ -24,6 +24,7 @@ $config['rest_default_format'] = 'json';
  */
 $config['enable_emulate_request'] = TRUE;
 
+$config['allow_any_cors_domain'] = TRUE;
 
 /*
  |--------------------------------------------------------------------------
@@ -263,9 +264,8 @@ $config['rest_ajax_only'] = FALSE;
  |--------------------------------------------------------------------------
  |
  */
-$config['rest_server']	= 'http://restigniter/index.php/api/';
+$config['rest_server']	= 'api.cestates.io/';
 //$config['rest_server']	= site_url('api').'/';   //don't forget the trailing slash
-
 
 /* End of file config.php */
 /* Location: ./system/application/config/rest.php */

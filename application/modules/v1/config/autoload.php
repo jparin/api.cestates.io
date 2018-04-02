@@ -2,5 +2,5 @@
 
 $autoload['libraries'] = array('database');
 $autoload['config'] = array('rest');
-$autoload['helper'] = array('date');
+$autoload['helper'] = array('date', 'jwt', 'authorization', 'form', 'url');
 

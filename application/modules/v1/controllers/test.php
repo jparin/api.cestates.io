@@ -25,7 +25,7 @@ require APPPATH.'/modules/v1/libraries/REST_Controller.php';
 
         public function index()
         {
-            echo 'test';
+            echo "TEST";
         }
 
     }

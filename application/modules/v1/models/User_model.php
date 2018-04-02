@@ -1,7 +1,23 @@
 <?php
 
-class User_Model extends CI_Model
+class User_Model extends MY_Model
 {
+
+	protected $_table_name = 'cet_users';
+    protected $_primary_key = 'cet_user_id';
+    protected $_table_prefix = 'cet';
+    protected $_order_by = '';
+	protected $_timestamps = false;
+	
+	public $signup_form_validation = array(
+		'firstname' => array('field' => 'firstname', 'label' => 'First Name', 'rules' => 'required'),
+		'lastname' => array('field' => 'lastname', 'label' => 'Last Name', 'rules' => 'required'),
+		'email' => array('field' => 'email', 'label' => 'Email Address', 'rules' => 'required|valid_email|callback__email_is_unique'),
+		'password' => array('field' => 'password', 'label' => 'Password', 'rules' => 'required|min_length[6]|callback__password_allowed'),
+		'confirmed_password' => array('field' => 'confirmed_password', 'label' => 'Confirmed Password', 'rules' => 'matches[password]')
+	);
+
+
    public function __construct()
    {
       parent::__construct();

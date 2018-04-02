@@ -1,0 +1,4 @@
+application/config/database.php
+application/config/config.php
+public/images/properties/*
+!public/images/properties/.gitkeep
